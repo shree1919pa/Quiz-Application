@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Register Aspirant - Online Quiz</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">OQ</div>
+      <div class="app-title">Online Quiz Application</div>
+    </div>
+
+    <div class="card form" style="max-width:520px;margin:28px auto">
+      <h2 class="center">Register as Aspirant</h2>
+      <p class="center small-muted">Create your aspirant account</p>
+
+      <input class="input" id="fullName" placeholder="Full Name" type="text">
+      <input class="input" id="email" placeholder="Email" type="email">
+      <input class="input" id="password" placeholder="Password" type="password">
+      <input class="input" id="confirmPassword" placeholder="Confirm Password" type="password">
+
+      <div style="display:flex;gap:12px;justify-content:space-between;align-items:center;margin-top:8px">
+        <a href="login.html" class="link">Back to Login</a>
+        <button class="btn btn-primary" id="registerBtn">Register</button>
+      </div>
+
+      <p id="regError" class="error"></p>
+      <p id="regSuccess" style="color:green"></p>
+    </div>
+  </div>
+
+<script src="../js/registerAspirant.js"></script>
+</body>
+</html>

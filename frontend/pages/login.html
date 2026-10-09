@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Online Quiz Application - Login</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">OQ</div>
+      <div class="app-title">Online Quiz Application</div>
+    </div>
+
+    <div class="auth-wrapper">
+      <div class="card">
+        <h2 class="center">Welcome back</h2>
+        <p class="center small-muted">Sign in to continue to Online Quiz Application</p>
+        <div class="login-grid" style="margin-top:18px">
+          <div class="login-option" id="examinerLoginCard">
+            <h3>Login as Examiner</h3>
+            <p class="small">Manage exams, create quizzes and view results</p>
+            <button class="btn btn-primary btn-lg" onclick="location.href='examiner-dashboard.html'">Login</button>
+          </div>
+
+          <div class="login-option" id="aspirantLoginCard">
+            <h3>Login as Aspirant</h3>
+            <p class="small">Take quizzes and view your scores</p>
+            <button class="btn btn-outline btn-lg" onclick="location.href='aspirant-dashboard.html'">Login</button>
+          </div>
+        </div>
+
+        <div class="center create-account">
+          <button class="btn btn-outline" onclick="location.href='register-examiner.html'">Create Examiner Account</button>
+          <button class="btn btn-primary" onclick="location.href='register-aspirant.html'">Create Aspirant Account</button>
+        </div>
+
+        <p class="footer">Need help? Contact your system administrator.</p>
+      </div>
+
+      <div class="card form">
+        <h3 class="center">Quick Login</h3>
+        <input class="input" id="email" placeholder="Email" type="email">
+        <input class="input" id="password" placeholder="Password" type="password">
+
+        <div class="form-actions">
+          <label><input type="checkbox"> Remember me</label>
+          <a href="#" class="link">Forgot password?</a>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:12px">
+          <button class="btn btn-primary" id="loginExaminerBtn">Login as Examiner</button>
+          <button class="btn btn-outline" id="loginAspirantBtn">Login as Aspirant</button>
+        </div>
+
+        <p id="loginError" class="error"></p>
+      </div>
+    </div>
+  </div>
+
+<script src="../js/login.js"></script>
+</body>
+</html>

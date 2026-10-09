@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Aspirant Dashboard - Online Quiz</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo">OQ</div>
+          <div>
+            <div style="font-weight:700">Aspirant</div>
+            <div style="font-size:13px;opacity:0.9">Take quizzes & view results</div>
+          </div>
+        </div>
+
+        <nav class="side-nav">
+          <div class="nav-item" id="availableQuizzesNav">Available Quizzes</div>
+          <div class="nav-item" id="historyNav">Quiz History</div>
+          <div class="nav-item" id="resultsNav">Results</div>
+          <div class="nav-item logout" id="logoutBtn">Logout</div>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <h2>Welcome, <span id="aspirantName">Aspirant</span></h2>
+        <p class="small-muted">Choose a quiz from the list below</p>
+
+        <div class="cards" style="margin-top:18px">
+          <div class="card-action">
+            <h4>Available Quizzes</h4>
+            <p>Explore quizzes you can take now.</p>
+            <button class="btn btn-primary">Browse</button>
+          </div>
+
+          <div class="card-action">
+            <h4>Quiz History</h4>
+            <p>Review previous attempts and scores.</p>
+            <button class="btn btn-ghost">View</button>
+          </div>
+
+          <div class="card-action">
+            <h4>Results</h4>
+            <p>Check your detailed results and analytics.</p>
+            <button class="btn btn-outline">Open</button>
+          </div>
+
+          <div class="card-action">
+            <h4>Logout</h4>
+            <p>End your session.</p>
+            <button class="btn logout" id="dashLogout">Logout</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+<script src="../js/aspirantDashboard.js"></script>
+</body>
+</html>

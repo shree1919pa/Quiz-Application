@@ -1,0 +1,1 @@
+Assets folder for Online Quiz Application frontend. Add logos, images, and other static assets here.

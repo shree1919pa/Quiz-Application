@@ -1,0 +1,80 @@
+/* Global styles for Online Quiz Application */
+:root{
+  --dark-blue:#0b3d91;
+  --blue:#1e5bb8;
+  --light:#ffffff;
+  --muted:#f4f6fb;
+  --card:#ffffff;
+  --accent:#ff7a59;
+  --shadow:0 6px 18px rgba(11,61,145,0.12);
+  --glass: rgba(255,255,255,0.06);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg,var(--muted),#eaf1ff);
+  color:#0b2140;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.container{max-width:1100px;margin:40px auto;padding:20px}
+.header{display:flex;align-items:center;gap:16px}
+.logo{width:52px;height:52px;background:var(--dark-blue);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--light);font-weight:700;font-size:18px;box-shadow:var(--shadow)}
+.app-title{font-size:20px;color:var(--dark-blue);font-weight:700}
+
+/* Login layout */
+.auth-wrapper{display:flex;gap:40px;background:transparent;padding:30px;border-radius:12px;align-items:center;justify-content:center}
+.card{background:var(--card);border-radius:12px;padding:28px;box-shadow:var(--shadow);min-width:320px}
+.login-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.login-option{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px;border-radius:10px;border:1px solid rgba(15,36,86,0.06);cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+.login-option:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(11,61,145,0.12)}
+.login-option h3{margin:0;color:var(--dark-blue)}
+.small{font-size:13px;color:#445a7b}
+.create-account{margin-top:18px;display:flex;gap:12px;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:10px 16px;border-radius:8px;border:none;cursor:pointer;font-weight:600}
+.btn-primary{background:var(--dark-blue);color:var(--light)}
+.btn-outline{background:transparent;border:1px solid var(--dark-blue);color:var(--dark-blue)}
+.link{color:var(--blue);text-decoration:none}
+
+/* Forms */
+.form{display:flex;flex-direction:column;gap:12px;min-width:320px}
+.input{padding:12px;border-radius:8px;border:1px solid #d9e4ff;background:#fbfdff}
+.input:focus{outline:none;box-shadow:0 6px 18px rgba(30,91,184,0.12);border-color:var(--blue)}
+.field-row{display:flex;gap:12px}
+.error{color:#d62f2f;font-size:13px}
+.form-actions{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+
+/* Dashboards */
+.dashboard{display:flex;min-height:82vh}
+.sidebar{width:260px;background:linear-gradient(180deg,var(--dark-blue),var(--blue));color:var(--light);padding:24px;border-radius:12px;margin-right:20px}
+.sidebar .brand{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.side-nav{display:flex;flex-direction:column;gap:12px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:8px;cursor:pointer;transition:background .14s}
+.nav-item:hover{background:rgba(255,255,255,0.06)}
+.content{flex:1;padding:20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.card-action{padding:18px;border-radius:12px;background:linear-gradient(180deg,#fff,#f7fbff);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
+.card-action h4{margin:0}
+.card-action p{margin:0;color:#516a8a}
+.logout{margin-top:18px;background:#ff5f5f;color:#fff}
+
+/* Responsive */
+@media(max-width:900px){
+  .auth-wrapper{flex-direction:column;padding:12px}
+  .login-grid{grid-template-columns:1fr}
+  .sidebar{width:100%;border-radius:8px;margin-bottom:16px}
+  .dashboard{flex-direction:column}
+}
+
+/* Utility */
+.center{text-align:center}
+.small-muted{font-size:13px;color:#70809b}
+
+/* Buttons visuals */
+.btn-ghost{background:transparent;border:1px solid rgba(11,61,145,0.08);color:var(--dark-blue)}
+.btn-lg{padding:12px 20px;font-size:15px}
+
+/* subtle footer */
+.footer{margin-top:18px;text-align:center;color:#7b8fae;font-size:13px}

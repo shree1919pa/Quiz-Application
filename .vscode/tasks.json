@@ -1,0 +1,59 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "inspect quiz flow",
+			"type": "shell",
+			"command": "cd /d \"c:\\Users\\patle\\OneDrive\\Desktop\\Online Quiz Application\" && echo '--- quizController.js ---' && sed -n '1,260p' backend/controllers/quizController.js && echo '\\n--- quizRoutes.js ---' && sed -n '1,220p' backend/routes/quizRoutes.js && echo '\\n--- Quiz model ---' && sed -n '1,260p' backend/models/Quiz.js && echo '\\n--- CreateQuiz.jsx ---' && sed -n '1,260p' frontend/src/pages/examiner/CreateQuiz.jsx && echo '\\n--- api.js ---' && sed -n '1,260p' frontend/src/services/api.js && echo '\\n--- communityController.js ---' && sed -n '1,260p' backend/controllers/communityController.js",
+			"problemMatcher": []
+		},
+		{
+			"label": "inspect quiz flow",
+			"type": "shell",
+			"command": "cmd /c \"cd /d c:\\Users\\patle\\OneDrive\\Desktop\\Online Quiz Application && echo --- quizController.js --- && type backend\\controllers\\quizController.js && echo. && echo --- quizRoutes.js --- && type backend\\routes\\quizRoutes.js && echo. && echo --- Quiz model --- && type backend\\models\\Quiz.js && echo. && echo --- CreateQuiz.jsx --- && type frontend\\src\\pages\\examiner\\CreateQuiz.jsx && echo. && echo --- api.js --- && type frontend\\src\\services\\api.js && echo. && echo --- communityController.js --- && type backend\\controllers\\communityController.js\"",
+			"problemMatcher": []
+		},
+		{
+			"label": "inspect quiz flow",
+			"type": "shell",
+			"command": "powershell -NoProfile -Command \"Set-Location 'c:\\Users\\patle\\OneDrive\\Desktop\\Online Quiz Application'; Write-Output '--- quizController.js ---'; Get-Content 'backend/controllers/quizController.js' | Select-Object -First 260; Write-Output '--- quizRoutes.js ---'; Get-Content 'backend/routes/quizRoutes.js' | Select-Object -First 220; Write-Output '--- Quiz model ---'; Get-Content 'backend/models/Quiz.js' | Select-Object -First 260; Write-Output '--- CreateQuiz.jsx ---'; Get-Content 'frontend/src/pages/examiner/CreateQuiz.jsx' | Select-Object -First 260; Write-Output '--- api.js ---'; Get-Content 'frontend/src/services/api.js' | Select-Object -First 260; Write-Output '--- communityController.js ---'; Get-Content 'backend/controllers/communityController.js' | Select-Object -First 260\"",
+			"problemMatcher": []
+		},
+		{
+			"label": "inspect quiz flow",
+			"type": "shell",
+			"command": "powershell -NoProfile -Command \"Set-Location 'c:\\Users\\patle\\OneDrive\\Desktop\\Online Quiz Application'; Write-Host '--- quizController.js ---'; Get-Content 'backend/controllers/quizController.js' | Select-Object -First 260; Write-Host '--- quizRoutes.js ---'; Get-Content 'backend/routes/quizRoutes.js' | Select-Object -First 220; Write-Host '--- Quiz model ---'; Get-Content 'backend/models/Quiz.js' | Select-Object -First 260; Write-Host '--- CreateQuiz.jsx ---'; Get-Content 'frontend/src/pages/examiner/CreateQuiz.jsx' | Select-Object -First 260; Write-Host '--- api.js ---'; Get-Content 'frontend/src/services/api.js' | Select-Object -First 260; Write-Host '--- communityController.js ---'; Get-Content 'backend/controllers/communityController.js' | Select-Object -First 260\"",
+			"problemMatcher": []
+		},
+		{
+			"label": "inspect quiz flow",
+			"type": "shell",
+			"command": "powershell -NoProfile -Command \"Set-Location 'c:\\Users\\patle\\OneDrive\\Desktop\\Online Quiz Application'; Write-Output '--- quizController.js ---'; Get-Content 'backend/controllers/quizController.js' | Select-Object -First 260; Write-Output '--- quizRoutes.js ---'; Get-Content 'backend/routes/quizRoutes.js' | Select-Object -First 220; Write-Output '--- Quiz model ---'; Get-Content 'backend/models/Quiz.js' | Select-Object -First 260; Write-Output '--- CreateQuiz.jsx ---'; Get-Content 'frontend/src/pages/examiner/CreateQuiz.jsx' | Select-Object -First 260; Write-Output '--- api.js ---'; Get-Content 'frontend/src/services/api.js' | Select-Object -First 260; Write-Output '--- communityController.js ---'; Get-Content 'backend/controllers/communityController.js' | Select-Object -First 260\"",
+			"problemMatcher": []
+		},
+		{
+			"label": "pwd",
+			"type": "shell",
+			"command": "cmd /c \"cd /d c:\\Users\\patle\\OneDrive\\Desktop\\Online Quiz Application && dir\"",
+			"problemMatcher": []
+		},
+		{
+			"label": "show quiz controller",
+			"type": "shell",
+			"command": "Set-Location 'c:\\Users\\patle\\OneDrive\\Desktop\\Online Quiz Application'; Get-Content 'backend/controllers/quizController.js' | Select-Object -First 260",
+			"problemMatcher": []
+		},
+		{
+			"label": "show quiz routes",
+			"type": "shell",
+			"command": "powershell -NoProfile -Command \"Set-Location 'c:\\Users\\patle\\OneDrive\\Desktop\\Online Quiz Application'; Get-Content 'backend/routes/quizRoutes.js' -TotalCount 220\"",
+			"problemMatcher": []
+		},
+		{
+			"label": "show create quiz",
+			"type": "shell",
+			"command": "cmd /c \"cd /d c:\\Users\\patle\\OneDrive\\Desktop\\Online Quiz Application && type frontend\\src\\pages\\examiner\\CreateQuiz.jsx\"",
+			"problemMatcher": []
+		}
+	]
+}

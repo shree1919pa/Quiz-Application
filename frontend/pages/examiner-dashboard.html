@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Examiner Dashboard - Online Quiz</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo">OQ</div>
+          <div>
+            <div style="font-weight:700">Examiner</div>
+            <div style="font-size:13px;opacity:0.9">Manage quizzes & results</div>
+          </div>
+        </div>
+
+        <nav class="side-nav">
+          <div class="nav-item" id="createQuizNav">Create Quiz</div>
+          <div class="nav-item" id="manageQNav">Manage Questions</div>
+          <div class="nav-item" id="viewResultsNav">View Results</div>
+          <div class="nav-item logout" id="logoutBtn">Logout</div>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <h2>Welcome, <span id="examinerName">Examiner</span></h2>
+        <p class="small-muted">Use the sidebar to manage your quizzes</p>
+
+        <div class="cards" style="margin-top:18px">
+          <div class="card-action">
+            <h4>Create Quiz</h4>
+            <p>Build a new quiz and invite aspirants.</p>
+            <button class="btn btn-primary">Open</button>
+          </div>
+
+          <div class="card-action">
+            <h4>Manage Questions</h4>
+            <p>Add, edit or delete questions for quizzes.</p>
+            <button class="btn btn-ghost">Manage</button>
+          </div>
+
+          <div class="card-action">
+            <h4>View Results</h4>
+            <p>See performance and analytics for quizzes.</p>
+            <button class="btn btn-outline">View</button>
+          </div>
+
+          <div class="card-action">
+            <h4>Logout</h4>
+            <p>Sign out of your session.</p>
+            <button class="btn logout" id="dashLogout">Logout</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+<script src="../js/examinerDashboard.js"></script>
+</body>
+</html>
