@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { API_BASE_URL } from '../../services/api.js'
 
 const RegisterAspirant = () => {
   const [name, setName] = useState('')
@@ -32,7 +33,7 @@ const RegisterAspirant = () => {
 
     setLoading(true)
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register/aspirant', {
+      const response = await fetch(`${API_BASE_URL}/auth/register/aspirant`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name.trim(), email: email.trim(), password }),

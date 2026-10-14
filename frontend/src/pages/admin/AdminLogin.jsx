@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { API_BASE_URL } from '../../services/api.js';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -28,7 +29,7 @@ const AdminLogin = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login/admin', {
+      const response = await fetch(`${API_BASE_URL}/auth/login/admin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim(), password }),

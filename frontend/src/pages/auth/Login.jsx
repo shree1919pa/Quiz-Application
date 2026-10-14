@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { API_BASE_URL } from '../../services/api.js'
 
 const Login = () => {
   const [role, setRole] = useState('examiner')
@@ -36,7 +37,7 @@ const Login = () => {
     setLoading(true)
     try {
       console.log('[Login] Attempting login for role:', role, 'with email:', email)
-      const response = await fetch(`http://localhost:5000/api/auth/login/${role}`, {
+      const response = await fetch(`${API_BASE_URL}/auth/login/${role}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim(), password }),
