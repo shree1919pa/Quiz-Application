@@ -66,7 +66,7 @@ const AIExplanationCard = ({ explanation, onRefresh, isRefreshing }) => {
               border: "1px solid rgba(40, 88, 221, 0.2)"
             }}
           >
-            AI-Powered
+            {provider && provider.toLowerCase().includes("gemini") ? "✨ Gemini AI" : "AI-Powered"}
           </span>
         </div>
 

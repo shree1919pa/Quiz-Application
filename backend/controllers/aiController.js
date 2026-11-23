@@ -10,12 +10,12 @@ const AIExplanation = require("../models/AIExplanation");
 const explainQuestion = async (req, res) => {
   try {
     const userId = req.user?.id;
-    const { attemptId, questionId } = req.body;
+    const { attemptId, questionId, forceRefresh } = req.body;
 
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized user."
+        message: "Unauthorized: User session not found."
       });
     }
 
@@ -42,7 +42,8 @@ const explainQuestion = async (req, res) => {
       });
     }
 
-    if (attempt.aspirantId.toString() !== userId.toString()) {
+    const aspirantId = attempt.aspirantId?._id || attempt.aspirantId;
+    if (aspirantId.toString() !== userId.toString() && req.user.role !== "admin") {
       return res.status(403).json({
         success: false,
         message: "Forbidden: You do not have permission to access this quiz attempt."
@@ -50,9 +51,10 @@ const explainQuestion = async (req, res) => {
     }
 
     // 2. Verify that the question belongs to this attempt's recorded answers
-    const answerEntry = attempt.answers.find(
-      (a) => a.questionId && a.questionId.toString() === questionId.toString()
-    );
+    const answerEntry = attempt.answers.find((a) => {
+      const qId = a.questionId?._id || a.questionId;
+      return qId && qId.toString() === questionId.toString();
+    });
 
     if (!answerEntry) {
       return res.status(400).json({
@@ -61,19 +63,21 @@ const explainQuestion = async (req, res) => {
       });
     }
 
-    // 3. Check MongoDB Cache first to save AI compute and latency
-    const cachedExplanation = await AIExplanation.findOne({
-      attemptId: attempt._id,
-      questionId: questionId,
-      studentId: userId
-    });
-
-    if (cachedExplanation) {
-      return res.status(200).json({
-        success: true,
-        cached: true,
-        explanation: cachedExplanation
+    // 3. Check MongoDB Cache first unless forceRefresh is requested
+    if (!forceRefresh) {
+      const cachedExplanation = await AIExplanation.findOne({
+        attemptId: attempt._id,
+        questionId: questionId,
+        studentId: userId
       });
+
+      if (cachedExplanation) {
+        return res.status(200).json({
+          success: true,
+          cached: true,
+          explanation: cachedExplanation
+        });
+      }
     }
 
     // 4. Fetch authoritative Question details from MongoDB
@@ -86,7 +90,7 @@ const explainQuestion = async (req, res) => {
     }
 
     // 5. Build secure AI payload (only educational content, never credentials)
-    const aiServiceUrl = process.env.AI_SERVICE_URL || "http://localhost:8000";
+    const aiServiceUrl = (process.env.AI_SERVICE_URL || "http://localhost:8000").replace(/\/+$/, "");
     const payload = {
       question: question.question,
       options: question.options || [],
@@ -98,7 +102,7 @@ const explainQuestion = async (req, res) => {
     let aiData;
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+      const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout
 
       const aiResponse = await fetch(`${aiServiceUrl}/explain-question`, {
         method: "POST",
@@ -112,11 +116,27 @@ const explainQuestion = async (req, res) => {
       clearTimeout(timeoutId);
 
       if (!aiResponse.ok) {
-        const errorBody = await aiResponse.text();
-        console.error("[AI Service Error HTTP]", aiResponse.status, errorBody);
-        return res.status(503).json({
+        let errorMessage = "AI explanation service encountered an error. Please try again.";
+        try {
+          const errorJson = await aiResponse.json();
+          if (errorJson && (errorJson.detail || errorJson.message)) {
+            errorMessage = errorJson.detail || errorJson.message;
+          }
+        } catch (_) {
+          const errorText = await aiResponse.text().catch(() => "");
+          if (errorText) {
+            console.error("[AI Service Raw Error]", errorText.substring(0, 200));
+          }
+        }
+
+        console.error(`[AI Service HTTP ${aiResponse.status}]`, errorMessage);
+        const forwardStatus = [400, 401, 403, 404, 429].includes(aiResponse.status)
+          ? aiResponse.status
+          : 503;
+
+        return res.status(forwardStatus).json({
           success: false,
-          message: "AI explanation service encountered an error. Please try again."
+          message: errorMessage
         });
       }
 
@@ -125,14 +145,14 @@ const explainQuestion = async (req, res) => {
       console.error("[AI Service Connection Error]", fetchError.message);
       return res.status(503).json({
         success: false,
-        message: "AI explanation is temporarily unavailable. Please try again."
+        message: "AI explanation service is offline or unreachable. Please ensure the Python AI service is running."
       });
     }
 
     if (!aiData || !aiData.explanation) {
       return res.status(502).json({
         success: false,
-        message: "Invalid response received from AI service."
+        message: "Invalid or empty response received from AI service."
       });
     }
 
@@ -157,11 +177,12 @@ const explainQuestion = async (req, res) => {
         conceptExplanation: exp.conceptExplanation || "",
         example: exp.example || "",
         learningTip: exp.learningTip || "",
-        provider: aiData.provider || "auto"
+        provider: aiData.provider || "gemini"
       },
       {
         upsert: true,
-        returnDocument: 'after'
+        new: true,
+        setDefaultsOnInsert: true
       }
     );
 
@@ -211,7 +232,8 @@ const getAttemptExplanations = async (req, res) => {
       });
     }
 
-    if (attempt.aspirantId.toString() !== userId.toString()) {
+    const aspirantId = attempt.aspirantId?._id || attempt.aspirantId;
+    if (aspirantId.toString() !== userId.toString() && req.user.role !== "admin") {
       return res.status(403).json({
         success: false,
         message: "Forbidden: You do not have permission to view explanations for this attempt."

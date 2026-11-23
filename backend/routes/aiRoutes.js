@@ -7,7 +7,7 @@ const { verifyToken, authorizeRole } = require("../middleware/authMiddleware");
 router.post(
   "/explain-question",
   verifyToken,
-  authorizeRole("aspirant"),
+  authorizeRole(["aspirant", "admin"]),
   explainQuestion
 );
 
@@ -15,7 +15,7 @@ router.post(
 router.get(
   "/explanations/:attemptId",
   verifyToken,
-  authorizeRole("aspirant"),
+  authorizeRole(["aspirant", "admin"]),
   getAttemptExplanations
 );
 

@@ -14,7 +14,7 @@ async function runFullVerification() {
   console.log("🚀 STARTING FULL END-TO-END AI EXPLANATION VERIFICATION TEST");
   console.log("===============================================================");
 
-  const mongoUri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/quiz_db";
+  const mongoUri = "mongodb://127.0.0.1:27017/quiz_db";
   await mongoose.connect(mongoUri);
   console.log("[DB] Connected to MongoDB:", mongoUri);
 

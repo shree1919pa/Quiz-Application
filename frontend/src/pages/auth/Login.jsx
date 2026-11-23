@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
-import { API_BASE_URL } from '../../services/api.js'
+import { apiFetch } from '../../services/api.js'
 
 const Login = () => {
   const [role, setRole] = useState('examiner')
@@ -29,52 +29,46 @@ const Login = () => {
   const handleLogin = async (e) => {
     if (e) e.preventDefault()
     setError('')
-    if (!email.trim() || !password) {
+
+    const cleanEmail = email.trim()
+    if (!cleanEmail || !password) {
       setError('Email and password are required.')
       return
     }
 
     setLoading(true)
     try {
-      console.log('[Login] Attempting login for role:', role, 'with email:', email)
-      const response = await fetch(`${API_BASE_URL}/auth/login/${role}`, {
+      console.log('[Login] Attempting login for role:', role, 'with email:', cleanEmail)
+      const data = await apiFetch(`/auth/login/${role}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), password }),
-        credentials: 'include'
+        body: JSON.stringify({ email: cleanEmail, password }),
       })
-      const data = await response.json()
-      if (!response.ok) {
-        console.error('[Login] Login failed:', data)
-        setError(data.message || 'Login failed. Please check your credentials.')
-        return
+
+      if (!data || !data.token) {
+        throw new Error(data?.message || 'Login failed. No authentication token received.')
       }
+
       console.log('[Login] Login successful, token received:', {
         role: role,
         user: data.user?.name
       })
       
-      login(data.token, role);
+      login(data.token, role, data.user)
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(data.user)
-      );
-
-      if (role === "examiner") {
-        navigate("/examiner");
+      if (role === 'examiner') {
+        navigate('/examiner')
       } else {
         // If student has no interests yet, redirect to select interests
-        const hasInterests = data.user?.interests && Array.isArray(data.user.interests) && data.user.interests.length > 0;
+        const hasInterests = data.user?.interests && Array.isArray(data.user.interests) && data.user.interests.length > 0
         if (!hasInterests) {
-          navigate("/aspirant/select-interests");
+          navigate('/aspirant/select-interests')
         } else {
-          navigate("/aspirant");
+          navigate('/aspirant')
         }
       }
     } catch (err) {
       console.error('[Login] Error:', err)
-      setError('Unable to connect to the server.')
+      setError(err.message || 'Login failed. Please check your credentials.')
     } finally {
       setLoading(false)
     }

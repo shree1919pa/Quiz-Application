@@ -11,13 +11,26 @@ const connectDB = async () => {
 
     try {
         const dbName = process.env.DB_NAME || process.env.MONGODB_DB_NAME;
-        const options = dbName ? { dbName } : {};
+        const options = {
+            serverSelectionTimeoutMS: 5000,
+            ...(dbName ? { dbName } : {})
+        };
 
         const conn = await mongoose.connect(mongoUri, options);
         console.log(`MongoDB Connected Successfully: ${conn.connection.host} (Database: ${conn.connection.name})`);
         return conn;
     }
-    catch(err){
+    catch (err) {
+        if (process.env.NODE_ENV !== "production") {
+            try {
+                console.warn("[MongoDB] Remote connection failed. Attempting local MongoDB fallback (mongodb://127.0.0.1:27017/quiz_db)...");
+                const localConn = await mongoose.connect("mongodb://127.0.0.1:27017/quiz_db");
+                console.log(`[MongoDB] Connected Successfully to local database: ${localConn.connection.host}`);
+                return localConn;
+            } catch (localErr) {
+                console.error("Local Database Connection Error:", localErr.message);
+            }
+        }
         console.error("Database Connection Error:", err.message);
         process.exit(1);
     }

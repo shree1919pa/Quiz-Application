@@ -69,6 +69,22 @@ const corsOptions = {
       return callback(null, true);
     }
 
+    // In non-production, automatically permit any localhost, 127.0.0.1, or local subnet origin
+    if (process.env.NODE_ENV !== "production") {
+      try {
+        const parsed = new URL(normalized);
+        if (
+          parsed.hostname === "localhost" ||
+          parsed.hostname === "127.0.0.1" ||
+          parsed.hostname.startsWith("192.168.") ||
+          parsed.hostname.startsWith("10.") ||
+          parsed.hostname.startsWith("172.")
+        ) {
+          return callback(null, true);
+        }
+      } catch (_) {}
+    }
+
     // Allow *.onrender.com frontends automatically
     if (normalized.endsWith(".onrender.com")) {
       return callback(null, true);

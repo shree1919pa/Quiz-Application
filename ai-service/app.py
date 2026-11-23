@@ -1,12 +1,15 @@
 import os
 import logging
+from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-# Load environment variables
-load_dotenv()
+# Ensure environment variables are loaded from the ai-service directory
+_env_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(dotenv_path=_env_path, override=True)
+load_dotenv(override=True)  # Fallback to CWD
 
 from models.request_models import (
     ExplainQuestionRequest,
@@ -22,11 +25,19 @@ logging.basicConfig(
 )
 logger = logging.getLogger("ai_service")
 
+# Safe startup diagnostics (NEVER log secret values)
+_gemini_key_present = bool((os.getenv("GEMINI_API_KEY") or os.getenv("AI_API_KEY") or "").strip())
+_gemini_model = os.getenv("GEMINI_MODEL") or os.getenv("AI_MODEL") or "gemini-3.5-flash-lite"
+_ai_provider = os.getenv("AI_PROVIDER", "gemini")
+logger.info(
+    f"AI Service Initialized | Provider: {_ai_provider} | Gemini Key Configured: {_gemini_key_present} | Model: {_gemini_model}"
+)
+
 # Initialize FastAPI app
 app = FastAPI(
     title="Online Quiz AI Explanation Service",
     version="1.0.0",
-    description="Microservice providing AI-powered question and answer educational explanations."
+    description="Microservice providing AI-powered question and answer educational explanations via Google Gemini."
 )
 
 # CORS middleware
@@ -50,18 +61,22 @@ app.add_middleware(
 
 @app.get("/health", status_code=status.HTTP_200_OK)
 async def health_check():
-    """Health check endpoint."""
+    """Health check endpoint providing non-sensitive service status."""
+    key_configured = bool((os.getenv("GEMINI_API_KEY") or os.getenv("AI_API_KEY") or "").strip())
     return {
         "status": "healthy",
         "service": "Online Quiz AI Explanation Service",
-        "version": "1.0.0"
+        "version": "1.0.0",
+        "provider": os.getenv("AI_PROVIDER", "gemini"),
+        "gemini_model": os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite"),
+        "gemini_key_configured": key_configured
     }
 
 
 @app.post("/explain-question", response_model=ExplainQuestionResponse, status_code=status.HTTP_200_OK)
 async def explain_question(req: ExplainQuestionRequest):
     """
-    Generate an educational explanation for a quiz question.
+    Generate an educational explanation for a quiz question using Gemini AI.
     """
     logger.info(f"Received explanation request for question: '{req.question[:60]}...'")
     try:
@@ -71,16 +86,31 @@ async def explain_question(req: ExplainQuestionRequest):
             explanation=explanation,
             provider=provider
         )
+    except ValueError as ve:
+        err_msg = str(ve)
+        logger.warning(f"Validation or configuration error: {err_msg}")
+        status_code = status.HTTP_400_BAD_REQUEST
+        if "invalid" in err_msg.lower() and "key" in err_msg.lower():
+            status_code = status.HTTP_401_UNAUTHORIZED
+        elif "rate limit" in err_msg.lower() or "quota" in err_msg.lower():
+            status_code = status.HTTP_429_TOO_MANY_REQUESTS
+        raise HTTPException(status_code=status_code, detail=err_msg)
     except Exception as e:
-        logger.error(f"Failed to generate explanation: {e}", exc_info=True)
+        err_msg = str(e)
+        logger.error(f"Failed to generate explanation: {err_msg}", exc_info=True)
+        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        if "rate limit" in err_msg.lower() or "quota" in err_msg.lower():
+            status_code = status.HTTP_429_TOO_MANY_REQUESTS
+        elif "network" in err_msg.lower() or "connect" in err_msg.lower():
+            status_code = status.HTTP_503_SERVICE_UNAVAILABLE
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to generate AI explanation: {str(e)}"
+            status_code=status_code,
+            detail=err_msg
         )
 
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
     host = os.getenv("HOST", "0.0.0.0")
-    logger.info(f"Starting AI service on {host}:{port}")
+    logger.info(f"Starting AI service on http://{host}:{port}")
     uvicorn.run("app:app", host=host, port=port, reload=True)

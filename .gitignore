@@ -13,3 +13,27 @@ build/
 # IDE / OS
 .DS_Store
 *.log
+ai_service
+
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Python virtual environments
+venv/
+.venv/
+
+# Node dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build files
+dist/
+build/
+

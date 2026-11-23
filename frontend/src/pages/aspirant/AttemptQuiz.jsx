@@ -14,6 +14,7 @@ const AttemptQuiz = () => {
     const [answers, setAnswers] = useState({});
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [timeLeft, setTimeLeft] = useState(0);
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         if (!quizId) return;
@@ -73,6 +74,8 @@ const AttemptQuiz = () => {
     };
 
     const submitQuiz = async () => {
+        if (submitting) return;
+        setSubmitting(true);
         try {
             const data = await apiFetch(`/quiz/${quizId}/submit`, {
                 method: "POST",
@@ -86,6 +89,8 @@ const AttemptQuiz = () => {
         } catch (error) {
             console.error(error);
             alert(error.message || "Server Error");
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -201,8 +206,9 @@ const AttemptQuiz = () => {
                         <button
                             className="btn btn-primary"
                             onClick={submitQuiz}
+                            disabled={submitting}
                         >
-                            Submit Quiz
+                            {submitting ? "Submitting Quiz..." : "Submit Quiz"}
                         </button>
 
                     )}

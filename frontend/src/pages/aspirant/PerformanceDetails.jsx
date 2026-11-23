@@ -53,7 +53,7 @@ const PerformanceDetails = () => {
         }
     };
 
-    const handleExplainWithAI = async (questionId) => {
+    const handleExplainWithAI = async (questionId, forceRefresh = false) => {
         if (!questionId) return;
 
         setLoadingAI((prev) => ({ ...prev, [questionId]: true }));
@@ -64,7 +64,8 @@ const PerformanceDetails = () => {
                 method: "POST",
                 body: JSON.stringify({
                     attemptId,
-                    questionId
+                    questionId,
+                    forceRefresh
                 })
             });
 
@@ -469,7 +470,7 @@ const PerformanceDetails = () => {
                             {explanation ? (
                                 <AIExplanationCard
                                     explanation={explanation}
-                                    onRefresh={() => handleExplainWithAI(qIdStr)}
+                                    onRefresh={() => handleExplainWithAI(qIdStr, true)}
                                     isRefreshing={isAILoading}
                                 />
                             ) : isAILoading ? (

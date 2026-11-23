@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { API_BASE_URL } from '../../services/api.js'
+import { apiFetch } from '../../services/api.js'
 
 const RegisterExaminer = () => {
   const [name, setName] = useState('')
@@ -12,11 +12,15 @@ const RegisterExaminer = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    if (e) e.preventDefault()
     setError('')
     setSuccess('')
 
-    if (!name.trim() || !email.trim() || !password || !confirmPassword) {
+    const cleanName = name.trim()
+    const cleanEmail = email.trim()
+
+    if (!cleanName || !cleanEmail || !password || !confirmPassword) {
       setError('All fields are required.')
       return
     }
@@ -31,21 +35,15 @@ const RegisterExaminer = () => {
 
     setLoading(true)
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/register/examiner`, {
+      const data = await apiFetch('/auth/register/examiner', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), email: email.trim(), password }),
+        body: JSON.stringify({ name: cleanName, email: cleanEmail, password }),
       })
-      const data = await response.json()
-      if (!response.ok) {
-        setError(data.message || 'Registration failed.')
-        return
-      }
 
-      setSuccess('Examiner account created successfully.')
-      setTimeout(() => navigate('/'), 1200)
+      setSuccess(data.message || 'Examiner registration submitted. Awaiting admin approval.')
+      setTimeout(() => navigate('/'), 1500)
     } catch (err) {
-      setError('Unable to connect to the server.')
+      setError(err.message || 'Registration failed.')
       console.error(err)
     } finally {
       setLoading(false)
@@ -57,29 +55,56 @@ const RegisterExaminer = () => {
       <section className="auth-card large-card">
         <span className="eyebrow">Examiner Registration</span>
         <h1>Register as an Examiner</h1>
-        <label>
-          Full Name
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Jane Doe" />
-        </label>
-        <label>
-          Email address
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
-        </label>
-        <label>
-          Password
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
-        </label>
-        <label>
-          Confirm Password
-          <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" />
-        </label>
 
-        {error && <div className="error-message">{error}</div>}
-        {success && <div className="success-message">{success}</div>}
+        <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '14px' }}>
+          <label>
+            Full Name
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Jane Doe"
+              required
+            />
+          </label>
+          <label>
+            Email address
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+            />
+          </label>
+          <label>
+            Password
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+            />
+          </label>
+          <label>
+            Confirm Password
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+            />
+          </label>
 
-        <button className="btn btn-primary btn-block" onClick={handleSubmit} disabled={loading}>
-          {loading ? 'Registering...' : 'Register Examiner'}
-        </button>
+          {error && <div className="error-message">{error}</div>}
+          {success && <div className="success-message">{success}</div>}
+
+          <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+            {loading ? 'Registering...' : 'Register Examiner'}
+          </button>
+        </form>
 
         <div className="form-footnote">
           <span>Already have an account?</span>

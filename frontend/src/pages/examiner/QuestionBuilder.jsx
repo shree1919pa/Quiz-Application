@@ -31,7 +31,11 @@ const QuestionBuilder = () => {
     const [marks, setMarks] =
         useState(1);
 
+    const [addingQuestion, setAddingQuestion] = useState(false);
+    const [publishing, setPublishing] = useState(false);
+
     const saveQuestion = async () => {
+        if (addingQuestion || publishing) return;
 
         try {
 
@@ -60,6 +64,7 @@ const QuestionBuilder = () => {
 
             }
 
+            setAddingQuestion(true);
             const data = await apiFetch(`/quiz/${quizId}/question`, {
                 method: "POST",
                 body: JSON.stringify(payload)
@@ -76,15 +81,17 @@ const QuestionBuilder = () => {
             setMarks(1);
 
         } catch (error) {
-
-            console.log(error);
-
+            console.error(error);
+            alert(error.message || "Failed to add question.");
+        } finally {
+            setAddingQuestion(false);
         }
     };
 
     const publishQuiz = async () => {
-
-    try {
+        if (addingQuestion || publishing) return;
+        setPublishing(true);
+        try {
 
         // Save the current question first
         if (question.trim() !== "") {
@@ -129,9 +136,11 @@ const QuestionBuilder = () => {
 
     } catch (error) {
 
-        console.log(error);
-        alert("Error Publishing Quiz");
+        console.error(error);
+        alert(error.message || "Error Publishing Quiz");
 
+    } finally {
+        setPublishing(false);
     }
 };
 
@@ -266,15 +275,17 @@ const QuestionBuilder = () => {
                     <button
                         className="btn btn-primary"
                         onClick={saveQuestion}
+                        disabled={addingQuestion || publishing}
                     >
-                        Add Question
+                        {addingQuestion ? "Adding Question..." : "Add Question"}
                     </button>
 
                     <button
                         className="btn btn-outline"
                         onClick={publishQuiz}
+                        disabled={addingQuestion || publishing}
                     >
-                        Publish Quiz
+                        {publishing ? "Publishing Quiz..." : "Publish Quiz"}
                     </button>
                 </div>
 

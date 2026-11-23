@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { API_BASE_URL } from '../../services/api.js';
+import { apiFetch } from '../../services/api.js';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -22,36 +22,30 @@ const AdminLogin = () => {
     e?.preventDefault();
     setError('');
 
-    if (!email.trim() || !password) {
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !password) {
       setError('Please enter administrator email and password.');
       return;
     }
 
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login/admin`, {
+      const data = await apiFetch('/auth/login/admin', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), password }),
-        credentials: 'include'
+        body: JSON.stringify({ email: cleanEmail, password })
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || 'Invalid administrator credentials.');
-        return;
+      if (!data || !data.token) {
+        throw new Error(data?.message || 'Invalid administrator credentials.');
       }
 
-      // Save token and admin role to auth context
-      login(data.token, 'admin');
-
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // Save token, admin role, and user object to auth context
+      login(data.token, 'admin', data.user);
 
       navigate('/admin/dashboard');
     } catch (err) {
       console.error('[AdminLogin] Error:', err);
-      setError('Unable to connect to the authentication server.');
+      setError(err.message || 'Invalid administrator credentials.');
     } finally {
       setLoading(false);
     }
